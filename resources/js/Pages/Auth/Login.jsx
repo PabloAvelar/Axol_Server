@@ -1,22 +1,26 @@
-import { useEffect } from 'react';
-import Checkbox from '@/Components/Checkbox';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, useForm } from '@inertiajs/react';
+import { useEffect } from "react";
+import Checkbox from "@/Components/Checkbox";
+import GuestLayout from "@/Layouts/GuestLayout";
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import { Head, useForm } from "@inertiajs/react";
 
 export default function Login({ errors }) {
     const { data, setData, post, processing } = useForm({
-        username: '',
-        password: '',
+        username: "",
+        password: "",
         remember: false,
     });
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('login'));
+        const loginEndpoint = "/api/login";
+        console.log("Login endpoint: ", loginEndpoint);
+        const res = post(loginEndpoint);
+        console.log("response:")
+        console.log(res)
     };
 
     return (
@@ -40,7 +44,7 @@ export default function Login({ errors }) {
                         className="mt-1 block w-full"
                         autoComplete="username"
                         isFocused={true}
-                        onChange={(e) => setData('username', e.target.value)}
+                        onChange={(e) => setData("username", e.target.value)}
                     />
                     <InputError message={errors.username} className="mt-2" />
                 </div>
@@ -54,7 +58,7 @@ export default function Login({ errors }) {
                         value={data.password}
                         className="mt-1 block w-full"
                         autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
+                        onChange={(e) => setData("password", e.target.value)}
                     />
                     <InputError message={errors.password} className="mt-2" />
                 </div>
@@ -64,9 +68,13 @@ export default function Login({ errors }) {
                         <Checkbox
                             name="remember"
                             checked={data.remember}
-                            onChange={(e) => setData('remember', e.target.checked)}
+                            onChange={(e) =>
+                                setData("remember", e.target.checked)
+                            }
                         />
-                        <span className="ms-2 text-sm text-gray-600">Remember me</span>
+                        <span className="ms-2 text-sm text-gray-600">
+                            Remember me
+                        </span>
                     </label>
                 </div>
 

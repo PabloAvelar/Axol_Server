@@ -18,6 +18,14 @@ use Inertia\Inertia;
 |
 */
 
+Route::get('/check-session', function () {
+    if (Auth::check()) {
+        return response()->json(['message' => 'Usuario autenticado', 'user' => Auth::user()]);
+    } else {
+        return response()->json(['message' => 'No autenticado']);
+    }
+});
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -40,11 +48,11 @@ Route::middleware('auth')->group(function () {
 });
 
 // Rutas de autenticación personalizadas
-Route::get('/login', function () {
+Route::middleware('guest')->get('/login', function () {
     return Inertia::render('LoginForm'); // Renderiza el formulario de login
-})->name('login')->middleware('guest'); // Protege la ruta para evitar acceso a usuarios autenticados
+})->name('login');
 
-Route::post('/login', [AuthController::class, 'login'])->middleware('guest'); // Maneja el inicio de sesión
+Route::middleware('guest')->post('/login', [AuthController::class, 'login']); // Maneja el inicio de sesión
 
 // Logout
 Route::post('/logout', function () {

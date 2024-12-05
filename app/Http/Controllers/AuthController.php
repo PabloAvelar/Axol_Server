@@ -7,15 +7,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Validator;
+
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $request->validate([
-            'username' => 'required|string|max:255',
-            'password' => 'required|string|min:8',
+
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|max:30',
+            'password' => 'required|string|min:3',
         ]);
+
+        // Verificar que los campos recibidos están bien
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
 
         if (RateLimiter::tooManyAttempts($request->username, 5)) {
             return response()->json([
@@ -23,16 +31,14 @@ class AuthController extends Controller
             ], 429);
         }
 
-        $user = User::where('username', $request->username)->first();
 
-        if ($user && Hash::check($request->password, $user->password)) {
-            Auth::login($user);
-
+        if (Auth::attempt($request->only('username', 'password'), $request->remember)) {
             RateLimiter::clear($request->username);
-
+            // $request->session()->regenerate();
+            session()->regenerate();
             return response()->json([
                 'message' => 'Inicio de sesión exitoso',
-                'user' => $user,
+                'user' => Auth::user(),
             ], 200);
         }
 
