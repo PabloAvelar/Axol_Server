@@ -19,11 +19,11 @@ use Inertia\Inertia;
 */
 
 Route::get('/check-session', function () {
-    if (Auth::check()) {
-        return response()->json(['message' => 'Usuario autenticado', 'user' => Auth::user()]);
-    } else {
-        return response()->json(['message' => 'No autenticado']);
-    }
+    return response()->json([
+        'authenticated' => Auth::check(),
+        'user' => Auth::user(),
+        'session' => session()->all(),
+    ]);
 });
 
 Route::get('/', function () {
