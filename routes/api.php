@@ -18,7 +18,8 @@ Route::post('/homehub', [HomehubController::class, 'registerHomehub']);
 Route::get('/homehub', [HomehubController::class, 'getHomehub']);
 
 // Bucket
-Route::post('/sensor/bucket', [BucketController::class, 'registerBucket']);
+Route::post('/sensor/bucket', [BucketController::class, 'newData']);
+Route::post('/sensor/register/bucket', [BucketController::class, 'registerBucket']);
 
 // Tank
 Route::get('/sensor/tank', [HomehubController::class, 'getHomehub']);
